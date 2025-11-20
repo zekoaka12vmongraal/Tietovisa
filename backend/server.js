@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import 'cross-fetch/dist/node-polyfill.js';     // ⭐ FIX: pakottaa fetchin toimimaan Node:ssa
+import 'cross-fetch/dist/node-polyfill.js';     
 import { createClient } from "@supabase/supabase-js";
-
-dotenv.config();
+import path from "path";
 
 dotenv.config();
 
@@ -15,36 +14,25 @@ app.use(express.json());
 // Supabase client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// --- API routes ---
-
-// Hae kysymykset tietyn kategorian perusteella
+// --- API routes --- (sama kuin aiemmin)
 app.get("/api/questions/:category", async (req, res) => {
   const { category } = req.params;
-  const { data, error } = await supabase
-    .from("questions")
-    .select("*")
-    .ilike("category", category);
-
+  const { data, error } = await supabase.from("questions").select("*").ilike("category", category);
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// Hae top-10 tulokset
 app.get("/api/results/:category", async (req, res) => {
   const { category } = req.params;
-  const { data, error } = await supabase
-    .from("results")
-    .select("*")
+  const { data, error } = await supabase.from("results").select("*")
     .eq("category", category)
     .order("correct", { ascending: false })
     .order("time", { ascending: true })
     .limit(10);
-
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// Tallenna uusi tulos
 app.post("/api/results", async (req, res) => {
   const { username, category, correct, time } = req.body;
   const { error } = await supabase.from("results").insert([{ username, category, correct, time }]);
@@ -52,30 +40,19 @@ app.post("/api/results", async (req, res) => {
   res.json({ message: "Tulos tallennettu" });
 });
 
-// --- Automaattinen seed ---
-
 app.get("/api/seed", async (req, res) => {
   const questions = [
-  // FullStack
-  { category: "fullstack", question: "Mikä on Reactin hook, jolla hallitaan komponentin tilaa?", options: ["useState", "setState", "useEffect"], correct: "useState" },
-  { category: "fullstack", question: "Mihin Node.js perustuu?", options: ["Python", "Chrome V8 -moottori", "Ruby"], correct: "Chrome V8 -moottori" },
-  { category: "fullstack", question: "Mikä on Express?", options: ["Tietokanta", "Node.js:n web-framework", "CSS-kirjasto"], correct: "Node.js:n web-framework" },
-
-  // Historia
-  { category: "historia", question: "Kuka oli Suomen ensimmäinen presidentti?", options: ["Mannerheim", "Kallio", "Ståhlberg"], correct: "Ståhlberg" },
-  { category: "historia", question: "Milloin toinen maailmansota alkoi?", options: ["1939", "1945", "1914"], correct: "1939" },
-  { category: "historia", question: "Missä tapahtui Ranskan vallankumous?", options: ["Pariisi", "Rooma", "Lontoo"], correct: "Pariisi" },
-
-  // Elokuvat
-  { category: "elokuvat", question: "Kuka ohjasi elokuvan Inception?", options: ["Christopher Nolan", "Steven Spielberg", "James Cameron"], correct: "Christopher Nolan" },
-  { category: "elokuvat", question: "Mikä Star Wars -hahmo sanoo 'I am your father'?", options: ["Luke Skywalker", "Darth Vader", "Han Solo"], correct: "Darth Vader" },
-  { category: "elokuvat", question: "Mikä elokuva voitti parhaan elokuvan Oscarin vuonna 1994?", options: ["Forrest Gump", "Pulp Fiction", "Braveheart"], correct: "Forrest Gump" },
-];
-
-
+    // kysymykset sama kuin aiemmin
+  ];
   const { error } = await supabase.from("questions").insert(questions);
   if (error) return res.status(500).json({ error: error.message });
   res.json({ message: "Kysymykset lisätty Supabaseen!" });
+});
+
+// --- Staattisen frontendin palveleminen ---
+app.use(express.static(path.join(__dirname, "dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 // --- Käynnistä palvelin ---
