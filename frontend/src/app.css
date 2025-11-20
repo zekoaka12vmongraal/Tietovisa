@@ -1,0 +1,135 @@
+/* YLEISEMPIÄ TYYLEJÄ */
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #1c1f29, #23283b);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  font-weight: 600;
+}
+
+/* KESKITYS KAIKKIIN SIVUIHIN */
+.menu, .quiz, .end {
+  width: 95%;
+  max-width: 480px;
+  margin-top: 50px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+}
+
+/* DROPDOWN */
+select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  background: #ffffffdd;
+  color: #333;
+  margin-bottom: 20px;
+  transition: 0.2s;
+}
+
+select:focus {
+  outline: 2px solid #6a5acd;
+}
+
+/* NAPIT */
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 17px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #6a5acd;
+  color: white;
+  margin: 10px 0;
+  transition: 0.25s ease;
+  font-weight: 600;
+}
+
+button:hover {
+  background: #7c6eff;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background: #555;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* QUIZ - KYSYMYS */
+.quiz h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+/* VASTAUSNAPIT */
+.quiz button {
+  background: #353b50;
+}
+
+.quiz button:hover {
+  background: #46507a;
+}
+
+/* INFO-TEKSTIT */
+.quiz p, .end p {
+  margin-top: 10px;
+  text-align: center;
+  opacity: 0.85;
+}
+
+/* LOPPUTULOS */
+.end input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.end ul {
+  list-style: none;
+  padding: 0;
+}
+
+.end li {
+  background: rgba(255,255,255,0.12);
+  margin: 8px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.end li:nth-child(1) {
+  background: rgba(255,215,0,0.28);
+  font-weight: bold;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .menu, .quiz, .end {
+    margin-top: 20px;
+    padding: 20px;
+  }
+
+  button, select, input {
+    font-size: 16px;
+  }
+}
